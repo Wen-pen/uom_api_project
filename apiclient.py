@@ -1,28 +1,29 @@
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
+from fruit import Fruit 
 import json
 
 class ApiClient:
     def __init__(self, url: str, fruit: str):
         self.url = url
-        self.fruit = self.return_response(fruit)
+        self.fruit = fruit
 
-    def return_response(self, fruit)-> dict:
+    def return_response(self) -> Fruit:
         try:
-            with urlopen(self.url + fruit) as response:
+            with urlopen(self.url + self.fruit) as response:
                 body = response.read()
-                converted_response = json.loads(body)
-                return converted_response
         except HTTPError as e:
             status_code = e.code
-            raise Exception(f" Error connecting, HTTP Code: {status_code}") 
+            raise Exception(f"Error connecting, HTTP Code: {status_code}") 
         except URLError as e:
-            raise Exception(f"URLError: {e.reason}") 
-        
-    def return_details(self) -> dict:
-        return self.fruit
-    
-    def return_details_str(self) -> str:
-        name = self.fruit["name"]
-        id = self.fruit["id"]
-        return ""
+            raise Exception(f"Error connecting, URLError: {e.reason}") 
+        else:
+            converted_response = json.loads(body)
+
+            fruit_full_name = converted_response["name"]
+            fruit_id = int(converted_response["id"])
+            fruit_family = converted_response["family"]
+            fruit_sugar = float(converted_response["nutritions"]["sugar"])
+            fruit_carbs = float(converted_response["nutritions"]["carbohydrates"])
+
+            return Fruit(fruit_full_name, fruit_id, fruit_family, fruit_sugar, fruit_carbs)
