@@ -8,15 +8,16 @@ class ApiClient:
         self.url = url
         self.fruit = fruit
 
-    def return_response(self) -> Fruit:
+    def return_response(self) -> Fruit | None:
         try:
+            print("Connecting to FruityVice....\n")
             with urlopen(self.url + self.fruit) as response:
                 body = response.read()
         except HTTPError as e:
             status_code = e.code
-            raise Exception(f"Error connecting, HTTP Code: {status_code}") 
+            raise Exception(f"Error connecting, HTTP Code: {status_code}") from None 
         except URLError as e:
-            raise Exception(f"Error connecting, URLError: {e.reason}") 
+            raise Exception(f"Error connecting, URLError: {e.reason}") from None
         else:
             converted_response = json.loads(body)
 
@@ -27,3 +28,4 @@ class ApiClient:
             fruit_carbs = float(converted_response["nutritions"]["carbohydrates"])
 
             return Fruit(fruit_full_name, fruit_id, fruit_family, fruit_sugar, fruit_carbs)
+       

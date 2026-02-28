@@ -7,7 +7,7 @@ class Fruit:
         self.carbs = carbs
     
     def __str__(self) -> str:
-        return f"Fruit name: {self.full_name} \n ID: {self.id} \n Family: {self.family} \n Sugar: {self.sugar}g \n Carbs {self.carbs}"
+        return f"Fruit name: {self.full_name} \n ID: {self.id} \n Family: {self.family} \n Sugar: {self.sugar}g \n Carbs: {self.carbs}g \n"
     
     def __eq__(self, other) -> bool:
         if not isinstance(other, Fruit):
