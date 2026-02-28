@@ -1,26 +1,28 @@
 import argparse
-from fruit import Fruit
 from apiclient import ApiClient
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Searches and returns common facts of fruits for you!")
 
-fruit_arg = parser.add_argument("fruit")
-string_arg = parser.add_argument("-s")
-dict_arg = parser.add_argument("-d")
+parser.add_argument("fruit", metavar="FRUIT", type=str, help="Enter what fruit you need")
 
-def return_string_details(fruit: str) -> str:
-    returned_fruit = ApiClient("https://www.fruityvice.com/api/fruit/", fruit).return_response()
-    if returned_fruit is None:
-        return ""
+
+parser.add_argument("-d", "--dict", action="store_true", dest="as_dict", 
+                    help="Returns a dictionary representation of a fruit to standard output")
+
+args = parser.parse_args()
+
+
+def fetch_fruit(fruit_name: str):
+    try:
+        return ApiClient("https://www.fruityvice.com/api/fruit/", fruit_name).return_response()
+    except Exception as e:
+        print(f"Failed to retrieve fruit: {e}")
+        return None
+
+fruit_object = fetch_fruit(args.fruit)
+
+if fruit_object:
+    if args.as_dict:
+        print(fruit_object.as_dict())
     else:
-        return returned_fruit.__str__()
-
-def return_dict_details(fruit: str) -> dict:
-    returned_fruit = ApiClient("https://www.fruityvice.com/api/fruit/", fruit).return_response()
-    if returned_fruit is None:
-        return {}
-    else:
-        return returned_fruit.as_dict()
-    
-return_string_details("apple")
-return_string_details("strawberry")
+        print(fruit_object.__str__())

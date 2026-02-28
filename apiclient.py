@@ -8,7 +8,7 @@ class ApiClient:
         self.url = url
         self.fruit = fruit
 
-    def return_response(self) -> Fruit | None:
+    def return_response(self) -> Fruit:
         try:
             print("Connecting to FruityVice....\n")
             with urlopen(self.url + self.fruit) as response:
